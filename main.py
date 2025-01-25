@@ -9,8 +9,8 @@ import pyperclip
 class DashboardApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Advanced Productivity Dashboard")
-        self.root.geometry("900x700")
+        self.root.title("Ultimate Productivity Dashboard")
+        self.root.geometry("1000x750")
 
         # Create notebook for tabs
         self.notebook = ttk.Notebook(root)
@@ -27,20 +27,23 @@ class DashboardApp:
         frame = ttk.Frame(self.notebook)
         self.notebook.add(frame, text="Clipboard Manager")
 
-        label = ttk.Label(frame, text="Manage clipboard history and pin items.", wraplength=700, justify="center")
+        label = ttk.Label(frame, text="Manage clipboard history, pin items, and clear clipboard.", wraplength=800, justify="center")
         label.pack(pady=10)
 
         self.clipboard_history = tk.Listbox(frame, height=15, selectmode=tk.SINGLE)
         self.clipboard_history.pack(pady=10, fill='x', padx=20)
 
-        refresh_button = ttk.Button(frame, text="Refresh Clipboard", command=self.refresh_clipboard)
-        refresh_button.pack(pady=5)
+        buttons_frame = ttk.Frame(frame)
+        buttons_frame.pack(pady=10)
 
-        pin_button = ttk.Button(frame, text="Pin Selected", command=self.pin_clipboard_item)
-        pin_button.pack(pady=5)
+        refresh_button = ttk.Button(buttons_frame, text="Refresh Clipboard", command=self.refresh_clipboard)
+        refresh_button.grid(row=0, column=0, padx=5)
 
-        clear_button = ttk.Button(frame, text="Clear Clipboard", command=self.clear_clipboard)
-        clear_button.pack(pady=5)
+        pin_button = ttk.Button(buttons_frame, text="Pin Selected", command=self.pin_clipboard_item)
+        pin_button.grid(row=0, column=1, padx=5)
+
+        clear_button = ttk.Button(buttons_frame, text="Clear Clipboard", command=self.clear_clipboard)
+        clear_button.grid(row=0, column=2, padx=5)
 
     def refresh_clipboard(self):
         self.clipboard_history.delete(0, tk.END)
@@ -72,7 +75,7 @@ class DashboardApp:
         frame = ttk.Frame(self.notebook)
         self.notebook.add(frame, text="App Launcher")
 
-        label = ttk.Label(frame, text="Launch frequently used applications.", wraplength=700, justify="center")
+        label = ttk.Label(frame, text="Launch frequently used applications or custom scripts.", wraplength=800, justify="center")
         label.pack(pady=10)
 
         self.app_entry = ttk.Entry(frame, width=50)
@@ -81,6 +84,15 @@ class DashboardApp:
 
         launch_button = ttk.Button(frame, text="Launch App", command=self.launch_app)
         launch_button.pack(pady=5)
+
+        self.shortcuts_frame = ttk.Frame(frame)
+        self.shortcuts_frame.pack(pady=10)
+
+        ttk.Label(self.shortcuts_frame, text="Quick Launch:").pack(pady=5)
+
+        self.quick_apps = ["notepad", "calc", "cmd"]
+        for app in self.quick_apps:
+            ttk.Button(self.shortcuts_frame, text=app.capitalize(), command=lambda a=app: self.launch_app_directly(a)).pack(pady=2)
 
     def launch_app(self):
         app_path = self.app_entry.get()
@@ -93,11 +105,18 @@ class DashboardApp:
         else:
             showinfo("Error", "App path cannot be empty.")
 
+    def launch_app_directly(self, app_name):
+        try:
+            os.startfile(app_name)
+            showinfo("Success", f"Launched {app_name}")
+        except Exception as e:
+            showinfo("Error", f"Failed to launch app: {e}")
+
     def add_window_manager_tab(self):
         frame = ttk.Frame(self.notebook)
         self.notebook.add(frame, text="Window Manager")
 
-        label = ttk.Label(frame, text="Save and restore custom window layouts.", wraplength=700, justify="center")
+        label = ttk.Label(frame, text="Save and restore custom window layouts.", wraplength=800, justify="center")
         label.pack(pady=10)
 
         save_button = ttk.Button(frame, text="Save Layout", command=self.save_window_layout)
@@ -105,6 +124,8 @@ class DashboardApp:
 
         restore_button = ttk.Button(frame, text="Restore Layout", command=self.restore_window_layout)
         restore_button.pack(pady=5)
+
+        ttk.Label(frame, text="[Feature under development]").pack(pady=10)
 
     def save_window_layout(self):
         showinfo("Save Layout", "Window layout saved. [Feature under development]")
@@ -116,23 +137,26 @@ class DashboardApp:
         frame = ttk.Frame(self.notebook)
         self.notebook.add(frame, text="Resource Tracker")
 
-        label = ttk.Label(frame, text="Monitor CPU, Memory, and Disk Usage.", wraplength=700, justify="center")
+        label = ttk.Label(frame, text="Monitor CPU, Memory, and Disk Usage with real-time updates.", wraplength=800, justify="center")
         label.pack(pady=10)
 
-        self.cpu_label = ttk.Label(frame, text="CPU Usage: 0%")
+        self.cpu_label = ttk.Label(frame, text="CPU Usage: 0%", font=("Arial", 12))
         self.cpu_label.pack(pady=5)
 
-        self.memory_label = ttk.Label(frame, text="Memory Usage: 0%")
+        self.memory_label = ttk.Label(frame, text="Memory Usage: 0%", font=("Arial", 12))
         self.memory_label.pack(pady=5)
 
-        self.disk_label = ttk.Label(frame, text="Disk Usage: 0%")
+        self.disk_label = ttk.Label(frame, text="Disk Usage: 0%", font=("Arial", 12))
         self.disk_label.pack(pady=5)
 
-        refresh_button = ttk.Button(frame, text="Refresh Stats", command=self.refresh_stats)
-        refresh_button.pack(pady=10)
+        buttons_frame = ttk.Frame(frame)
+        buttons_frame.pack(pady=10)
 
-        auto_refresh_button = ttk.Button(frame, text="Toggle Auto Refresh", command=self.toggle_auto_refresh)
-        auto_refresh_button.pack(pady=5)
+        refresh_button = ttk.Button(buttons_frame, text="Refresh Stats", command=self.refresh_stats)
+        refresh_button.grid(row=0, column=0, padx=5)
+
+        auto_refresh_button = ttk.Button(buttons_frame, text="Toggle Auto Refresh", command=self.toggle_auto_refresh)
+        auto_refresh_button.grid(row=0, column=1, padx=5)
 
         self.auto_refresh = False
 
@@ -162,7 +186,7 @@ class DashboardApp:
         frame = ttk.Frame(self.notebook)
         self.notebook.add(frame, text="Settings")
 
-        label = ttk.Label(frame, text="Configure your dashboard preferences.", wraplength=700, justify="center")
+        label = ttk.Label(frame, text="Configure your dashboard preferences.", wraplength=800, justify="center")
         label.pack(pady=10)
 
         theme_label = ttk.Label(frame, text="Theme:")
@@ -172,11 +196,14 @@ class DashboardApp:
         self.theme_combobox.current(0)
         self.theme_combobox.pack(pady=5)
 
-        apply_button = ttk.Button(frame, text="Apply Settings", command=self.apply_settings)
-        apply_button.pack(pady=10)
+        buttons_frame = ttk.Frame(frame)
+        buttons_frame.pack(pady=10)
 
-        reset_button = ttk.Button(frame, text="Reset to Default", command=self.reset_settings)
-        reset_button.pack(pady=5)
+        apply_button = ttk.Button(buttons_frame, text="Apply Settings", command=self.apply_settings)
+        apply_button.grid(row=0, column=0, padx=5)
+
+        reset_button = ttk.Button(buttons_frame, text="Reset to Default", command=self.reset_settings)
+        reset_button.grid(row=0, column=1, padx=5)
 
     def apply_settings(self):
         selected_theme = self.theme_combobox.get()
